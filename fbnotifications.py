@@ -1,3 +1,5 @@
+#!/bin/python3
+
 from argparse import ArgumentParser
 from random import randint
 from urllib.parse import urlencode
