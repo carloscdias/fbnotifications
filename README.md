@@ -3,4 +3,4 @@ Notificação no desktop de mensagens recebidas no chat do facebook que seguem u
 
 Exemplo de uso:
 
-./fbnotifications @?nome "vou te dar dinheiro" nome2
+./fbnotifications.py @?nome "vou te dar dinheiro" nome2
