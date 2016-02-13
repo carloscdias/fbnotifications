@@ -40,11 +40,16 @@ class FBNotifications:
 		if query is None:
 			query = self.get_new_query( fb_json )
 
-		url      = self.url + '?' + urlencode( query )
-		request  = Request( url, headers = { 'Cookie':'c_user={0};xs={1}'.format( self.cookies['c_user'], self.cookies['xs'] ), 'User-Agent':'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)', 'Referer':'https://www.facebook.com/', 'cache-control':'no-cache' } )
-		response = urlopen( request )
-		str_json = response.read().decode( 'utf-8' )[10:]
-		return loads( str_json )
+		try:
+			url      = self.url + '?' + urlencode( query )
+			request  = Request( url, headers = { 'Cookie':'c_user={0};xs={1}'.format( self.cookies['c_user'], self.cookies['xs'] ), 'User-Agent':'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)', 'Referer':'https://www.facebook.com/', 'cache-control':'no-cache' } )
+			response = urlopen( request )
+			str_json = response.read().decode( 'utf-8' )[10:]
+			
+			return loads( str_json )
+		except Exception( e ):
+			print( e )
+			return self.get_json( fb_json , query )
 
 	def do_search( self, msgs ):
 		for sender, msg in msgs.items():
