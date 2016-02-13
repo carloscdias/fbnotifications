@@ -12,11 +12,27 @@ import browser_cookie3
 class FBNotifications:
 	
 	def __init__( self, search ):
-		self.cookies      = { cookie.name:cookie.value for cookie in browser_cookie3.chrome( domain_name = 'facebook.com' ) }
-		self.user_id      = self.cookies['c_user']
+		cookies           = { cookie.name:cookie.value for cookie in browser_cookie3.chrome( domain_name = 'facebook.com' ) }
+		self.user_id      = cookies['c_user']
+		self.xs           = cookies['xs']
+		
 		self.regex_search = '({0})'.format( ')|('.join( search ) )
+
 		self.url          = 'https://{0}-edge-chat.facebook.com/pull'.format( randint( 0, 6 ) )
-		self.query        = { 'channel':'p_' + self.user_id, 'msgs_recv':'0', 'state':'offline' }
+		
+		self.headers      = {
+			'Cookie':'c_user={0};xs={1}'.format( self.user_id, self.xs ),
+			'User-Agent':'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)',
+			'Referer':'https://www.facebook.com/',
+			'cache-control':'no-cache'
+		}
+		
+		self.query        = {
+			'channel':'p_' + self.user_id,
+			'msgs_recv':'0',
+			'state':'offline'
+		}
+		
 		self.set_sticky()
 
 	def get_new_query( self, fb_json = {} ):
@@ -42,7 +58,7 @@ class FBNotifications:
 
 		try:
 			url      = self.url + '?' + urlencode( query )
-			request  = Request( url, headers = { 'Cookie':'c_user={0};xs={1}'.format( self.cookies['c_user'], self.cookies['xs'] ), 'User-Agent':'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)', 'Referer':'https://www.facebook.com/', 'cache-control':'no-cache' } )
+			request  = Request( url, headers = self.headers )
 			response = urlopen( request )
 			str_json = response.read().decode( 'utf-8' )[10:]
 			
